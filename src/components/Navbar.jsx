@@ -1,12 +1,16 @@
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Settings, User, Zap } from "lucide-react";
+import { ChevronDown, Settings, User, Zap } from "lucide-react";
 const Navbar = () => {
 
   const menuref = useRef(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const navigate = useNavigate();
   const handleMenuToggle = () => setMenuOpen((prev) => !prev)
+  const handleLogout = () => {
+    setMenuOpen(false)
+    onLogout()
+  }
   return (
     <header
       className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm
@@ -67,8 +71,42 @@ const Navbar = () => {
                       {User.name?.[0]?.toUpperCase() || 'U'}
                     </div>
                   )}
+
+                  <div className ='absolute-bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full
+                  border-2 border-white animate-pulse'/>
                 </div>
+                <div className="text-left hidden md:block">
+                  <p className="text-sm font-medium text-gray-800">{User.name}</p>
+                  <p className="text-xs text-gray-500 font-normal">{User.email}</p>
+                </div>
+                  <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform duration-300
+                  ${menuOpen ? 'rotate-180' : ''}`}/>
               </button>
+
+              {menuOpen && (
+                <ul className="absolute top-14 right-0 w-5 bg-white rounded-2xl shadow-xl border
+                border-purple-100 z-50 overflow-hidden animate-fadeIn">
+                  <li className="p-2">
+                    <button onClick={() => {
+                      setMenuOpen(false)
+                      navigate('/profile')
+                    }}
+                    className="w-full px-4 py-2.5 text-left hover:bg-purple-50 text-sm text-gray-700
+                    transition-colors flex items-center gap-2  group" role="menuitem">
+                      <Settings className="w-4 h-4 text-gray-700"/>
+                      profile Setting
+                    </button>
+                  </li>
+                  <li className="p-2">
+                    <button onClick={handleLogout} className="flex w-full items-center gap-2 rounded-lg
+                    px-3 py-2 text-sm hover:bg-red-50 text-red-600">
+                      <Logout className='w-4 h-4' />
+                      Logout
+                    </button>
+                  </li>
+
+                </ul>
+              )}
             </div>
           </div>
         </div>
