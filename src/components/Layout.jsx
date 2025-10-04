@@ -1,8 +1,10 @@
-import React from 'react'
+import Navbar from './Navbar'
 
-const Layout = () => {
+const Layout = ({onLogout, user}) => {
   return (
-    <div>Layout</div>
+    <div className='min-h-screen bg-gray-50'>
+      <Navbar user={user} onLogout={onLogout} />
+    </div>
   )
 }
 

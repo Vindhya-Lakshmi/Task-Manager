@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import { Outlet, Route, Routes, useNavigate } from "react-router-dom";
-import Login from '/components/Login'
-import { Layout } from "lucide-react";
 import SignUp from "./components/SignUp";
+import Login from "./components/Login";
+import Layout from "./components/Layout";
 
 
 
@@ -15,7 +15,7 @@ function App() {
   });
 
   useEffect(() => {
-    if(curuseEffectrentUser) {
+    if(currentUser) {
       localStorage.setItem('currentUser',JSON.stringify(currentUser))
     }
     else {
@@ -38,11 +38,11 @@ function App() {
     setCurrentUser(null);
     navigate('/login',{replace:true})
   }
-  const ProtectedLayout = () => {
+  const ProtectedLayout = () => (
     <Layout user = {currentUser} onLogout = {handleLogout}>
       <Outlet/>
     </Layout>
-  }
+  )
 
 
   return (
@@ -59,7 +59,7 @@ function App() {
 
   </div>} />
 
-  <Route path='/' element={<Layout />} />
+<Route path='/' element={<Layout user={currentUser} onLogout={handleLogout} />} />
  </Routes>
   );
 }
