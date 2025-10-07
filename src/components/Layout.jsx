@@ -3,7 +3,7 @@ import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import axios from "axios";
-import {Circle, Clock, TreadingUp, Zap} from 'lucide-react'
+import {Circle, Clock, TrendingUp, Zap} from 'lucide-react'
 
 const Layout = ({ onLogout, user }) => {
   const [tasks, setTasks] = useState([]);
@@ -133,7 +133,7 @@ const Layout = ({ onLogout, user }) => {
             <div className="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-purple-100">
               <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-800 
               flex items-center gap-2">
-                <TreadingUp className='w-4 h-4 sm:w-5 sm:h-5 tet-purple-500' />
+                <TrendingUp className='w-4 h-4 sm:w-5 sm:h-5 tet-purple-500' />
                 Task Statistics
               </h3>
               <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">

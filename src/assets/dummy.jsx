@@ -287,6 +287,6 @@ export const TI_CLASSES = {
 }
 // APP.JSX
 const user = {
-      avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name || 'User')}&background=random`
+      avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(User.name || 'User')}&background=random`
     };
 
