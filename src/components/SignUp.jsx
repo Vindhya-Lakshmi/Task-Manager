@@ -29,7 +29,7 @@ const SignUp = ({onSwitchMode}) => {
   }
   catch (error) {
     console.log("Signup error:",error)
-    setMessage({text: err.response?.data?.message || "An error occoured.Please try again.", type:"error"})
+    setMessage({text: error.response?.data?.message || "An error occoured.Please try again.", type:"error"})
 
   }
   finally {
