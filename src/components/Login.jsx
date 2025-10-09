@@ -1,8 +1,18 @@
 import { LogIn } from 'lucide-react'
 import React from 'react'
 import {toast, ToastContainer} from 'react-toastify'
+import { INPUTWRAPPER } from '../assets/dummy'
+
+const INITIAL_FORM = { email: "", password: "" };
+
 
 const Login = () => {
+
+  const [loading, setLoading] = useState(false)
+  const [formData, setFormData] = useState(INITIAL_FORM)
+
+  const navigate = useNavigate()
+  const url = 'http://localhost:4000'
   return (
     <div className='max-w-md bg-white w-full shadow-lg border border-purple-100 rounded-xl p-8'>
       <ToastContainer positions='top-center' autoClose={3000} hideProgressBar />
@@ -14,6 +24,23 @@ const Login = () => {
         <h2 className='text-2xl font-bold text-gray-800'>Welcome Back</h2>
         <p className='text-gray-500 text-sm mt-1'>Sign in to continue to TaskFlow</p>
       </div>
+      <form onSubmit={handleSubmit} className='space-y-4'>
+        {fields.map(({name,type,placeholder, icon:Icon, isPassword}) => (
+          <div key={name} className={INPUTWRAPPER}>
+            <Icon className='text-purple-500 w-5 h-5'/>
+            <input type={type} placeholder={placeholder} value={formData[name]}
+            onChange={(e) => setFormData({...formData,[name]: e.target.value})}
+            className='w-full focus:outline-none text-sm text-gray-700' required />
+
+            {isPassword && (
+              <button type=''>
+
+              </button>
+            )}
+
+          </div>
+        ))}
+      </form>
     </div>
   )
 }
