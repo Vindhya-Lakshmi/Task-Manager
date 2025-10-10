@@ -1,5 +1,5 @@
-import { LogIn } from 'lucide-react'
-import React from 'react'
+import { EyeOff, LogIn } from 'lucide-react'
+import React, { useState } from 'react'
 import {toast, ToastContainer} from 'react-toastify'
 import { INPUTWRAPPER } from '../assets/dummy'
 
@@ -8,8 +8,10 @@ const INITIAL_FORM = { email: "", password: "" };
 
 const Login = () => {
 
+  const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState(INITIAL_FORM)
+  const [rememberMe, setRememberMe] = useState(false)
 
   const navigate = useNavigate()
   const url = 'http://localhost:4000'
@@ -33,13 +35,19 @@ const Login = () => {
             className='w-full focus:outline-none text-sm text-gray-700' required />
 
             {isPassword && (
-              <button type=''>
+              <button type='button' onClick={() => setShowPassword((prev) => !prev)}
+              className='ml-2 text-gray-500 hover:text-purple-500 transition-colors'>
+                {showPassword ? <EyeOff className='w-5 h-5' /> : <Eye className='w-5 h-5' />}
 
               </button>
             )}
 
           </div>
         ))}
+
+        <div>
+          
+        </div>
       </form>
     </div>
   )
