@@ -1,12 +1,14 @@
-import { EyeOff, LogIn } from 'lucide-react'
-import React, { useState } from 'react'
+import { Eye, EyeOff, Lock, LogIn, Mail } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
 import {toast, ToastContainer} from 'react-toastify'
-import { INPUTWRAPPER } from '../assets/dummy'
+import { BUTTON_CLASSES, INPUTWRAPPER } from '../assets/dummy'
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios'
 
 const INITIAL_FORM = { email: "", password: "" };
 
 
-const Login = () => {
+const Login = ({onSubmit, onSwitchMode}) => {
 
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -15,6 +17,83 @@ const Login = () => {
 
   const navigate = useNavigate()
   const url = 'http://localhost:4000'
+
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    const userId = localStorage.getItem("userId")
+    if(token) {
+      (async () => {
+        try {
+          const {data} = await axios.get(`${url}/api/user/me`, {
+            headers: {Authorization: `Bearer ${token}`},
+          })
+          if (data.success) {
+            onSubmit?.({ token, userId, ...data.user})
+            toast.success("Session restored. Redirecting...")
+            navigate('/')
+          }
+          else {
+            localStorage.clear()
+          }
+        }
+        catch {
+          localStorage.clear()
+        }
+      })() 
+    }
+  }, [navigate, onSubmit])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if(!rememberMe) {
+      toast.error('You must enable "Remember Me" to login.')
+      return
+    }
+    setLoading(true)
+
+    try {
+      const {data} = await axios.post(`${url}/api/user/login`, formData)
+      if(!data.token) throw new Error(data.message || "Login failed")
+      localStorage.setItem("token", data.token)
+    localStorage.setItem("userId",data.user.id)
+    setFormData(INITIAL_FORM)
+    onSubmit?.({token:data.token, userId:data.user.id, ...data.user})
+    toast.success("Login successful! Redirecting...")
+    setTimeout(() => navigate("/"), 1000)
+
+    }
+    catch (err) {
+      const msg = err.response?.data?.message || err.message
+      toast.error(msg)
+    }
+    finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSwitchMode = () => {
+    toast.dismiss()
+    onSwitchMode?.()
+  }
+
+const fields = [
+  {
+  name:"error",
+  type:"email",
+  placeholder:"Email",
+  icon: Mail,
+},
+{
+  name:"password",
+  type: showPassword ? "text" : "password",
+  placeholder: "Password",
+  icon: Lock,
+  isPassword: true,
+
+  },
+]
+
+
   return (
     <div className='max-w-md bg-white w-full shadow-lg border border-purple-100 rounded-xl p-8'>
       <ToastContainer positions='top-center' autoClose={3000} hideProgressBar />
@@ -45,10 +124,28 @@ const Login = () => {
           </div>
         ))}
 
-        <div>
-          
+        <div className='flex items-center'>
+          <input type="checkbox" id='rememberMe' checked={rememberMe} onChange={() => setRememberMe(!rememberMe)}
+          className='h-4 w-4 text-purple-500 focus:ring-purple-400 border-gray-300 rounded' required />
+          <label htmlFor='rememberMe' className='ml-2 block text-sm text-gray-700 '>
+          Remember Me
+          </label>
         </div>
+        <button type ='submit' className={BUTTON_CLASSES} disabled={loading}>
+          {loading ? (
+            "Logging in..."
+          ) : (
+            <>
+            <LogIn className='w-4 h-4'/>
+            </>
+          )}
+        </button>
       </form>
+      <p className='text-center text-sm text-gray-600 mt-6'>
+        Don't have an account?{''}
+        <button type='button' className='text-gray-600 hover:text-purple-700 hover:underline font-medium 
+        transition-colors' onClick={handleSwitchMode}> Sign Up </button>
+      </p>
     </div>
   )
 }
