@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { Outlet, Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes, useNavigate } from "react-router-dom";
 import SignUp from "./components/SignUp";
 import Login from "./components/Login";
 import Layout from "./components/Layout";
@@ -59,7 +59,12 @@ function App() {
 
   </div>} />
 
-<Route path='/' element={<Layout user={currentUser} onLogout={handleLogout} />} />
+  <Route element={currentUser ? <ProtectedLayout /> : 
+  <Navigate to='/login'replace/>}>
+    <Route path='/' element={<Layout user={currentUser} onLogout={handleLogout} />} />
+
+  </Route>
+
  </Routes>
   );
 }
