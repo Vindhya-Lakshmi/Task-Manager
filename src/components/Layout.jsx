@@ -6,7 +6,6 @@ import {Circle, Clock, TrendingUp, Zap} from 'lucide-react'
 import axios from "axios";
 
 const Layout = ({ onLogout, user }) => {
-  console.log("pppppppppppppppppp");
   
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,14 +17,13 @@ const Layout = ({ onLogout, user }) => {
 
     try {
       const token = localStorage.getItem("token");
-      console.log("token", token);
 
       if (!token) throw new Error("No auth token found");
 
       const  data  = await axios.get("http://localhost:4000/api/tasks/gp", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log("dataaa",data);
+  
       
       const arr = Array.isArray(data)
         ? data

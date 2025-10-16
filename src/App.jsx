@@ -3,6 +3,7 @@ import { Navigate, Outlet, Route, Routes, useNavigate } from "react-router-dom";
 import SignUp from "./components/SignUp";
 import Login from "./components/Login";
 import Layout from "./components/Layout";
+import Dashboard from "./pages/Dashboard";
 
 
 
@@ -60,10 +61,14 @@ function App() {
   </div>} />
 
   <Route element={currentUser ? <ProtectedLayout /> : 
-  <Navigate to='/login'replace/>}>
-    <Route path='/' element={<Layout user={currentUser} onLogout={handleLogout} />} />
+  <Navigate to='/login' replace />}>
+          {/* <Route path='/' element={<Layout />} /> */}
+                <Route path='/' element={<Dashboard />} />
+
+
 
   </Route>
+    <Route path='/' element={<Layout user={currentUser} onLogout={handleLogout} />} />
 
  </Routes>
   );
