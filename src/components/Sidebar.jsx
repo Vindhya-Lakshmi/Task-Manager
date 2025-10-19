@@ -1,6 +1,7 @@
-import React from 'react'
-import { SIDEBAR_CLASSES } from '../assets/dummy'
+import React, { useEffect } from 'react'
+import { LINK_CLASSES, PRODUCTIVITY_CARD, SIDEBAR_CLASSES } from '../assets/dummy'
 import { useState } from 'react'
+import { Sparkles } from 'lucide-react'
 
 const Sidebar = (user, tasks) => {
 
@@ -16,6 +17,41 @@ const Sidebar = (user, tasks) => {
   const username = user?.name || "user"
   const initial = username.charAt(0).toUpperCase()
 
+  useEffect(() => {
+  document.body.style.overflow = mobileOpen ? "hidden" : "auto"
+  return () => {document.body.style.overflow = "auto"}
+  
+  }, [mobileOpen])
+
+ const renderMenuItems = (isMobile = false) => (
+  <ul className="space-y-2">
+    {menuItems.map(({ text, path, icon }) => (
+      <li key={text}>
+        <NavLink
+          to={path}
+          className={({ isActive }) =>
+            [
+              LINK_CLASSES.base,
+              isActive ? LINK_CLASSES.active : LINK_CLASSES.inactive,
+              isMobile ? "justify-start" : "lg:justify-start",
+            ].join(" ")
+          }
+          onClick={() => setMobileOpen(false)}
+        >
+          <span className={LINK_CLASSES.icon}>{icon}</span>
+          <span
+            className={`${isMobile ? "block" : "hidden lg:block"} ${
+              LINK_CLASSES.text
+            }`}
+          >
+            {text}
+          </span>
+        </NavLink>
+      </li>
+    ))}
+  </ul>
+);
+
   return (
     <>
     {/*desktop sidebar*/}
@@ -28,9 +64,23 @@ const Sidebar = (user, tasks) => {
           </div>
           <div>
             <h2 className='text-lg font-bold text-gray-800'>Hey,{username}</h2>
+            <p className='text-sm text-purple-500 font-medium flex items-center gap-1'>
+              <Sparkles className='w-3 h-3'/> Let's crush some tasks!
+            </p>
           </div>
         </div>
+      </div>
+      <div className='p-4 space-y-6 overflow-y-auto flex-1'>
+        <div className={PRODUCTIVITY_CARD.container}>
+          <div className={PRODUCTIVITY_CARD.header}>
+            <h3 className={PRODUCTIVITY_CARD.label}>PRODUCTIVITY</h3>
+            <span className={PRODUCTIVITY_CARD.badge}>{productivity}%</span>
+          </div>
+          <div className={PRODUCTIVITY_CARD.barFg}
+          style={{width:`${productivity}%`}}>
 
+          </div>
+        </div>
       </div>
     </div>
     </>
