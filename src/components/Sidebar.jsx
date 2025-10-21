@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
-import { LINK_CLASSES, PRODUCTIVITY_CARD, SIDEBAR_CLASSES } from '../assets/dummy'
+import { LINK_CLASSES, menuItems, PRODUCTIVITY_CARD, SIDEBAR_CLASSES } from '../assets/dummy'
 import { useState } from 'react'
 import { Sparkles } from 'lucide-react'
+import { NavLink } from "react-router-dom";
 
 const Sidebar = (user, tasks) => {
 
@@ -81,6 +82,8 @@ const Sidebar = (user, tasks) => {
 
           </div>
         </div>
+         {renderMenuItems()} 
+
       </div>
     </div>
     </>
