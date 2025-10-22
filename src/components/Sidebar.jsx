@@ -97,7 +97,7 @@ const Sidebar = (user, tasks) => {
                 </div>
             </div>
           </div>
-
+ 
          </div>
 
       </div>
