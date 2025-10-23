@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { LINK_CLASSES, menuItems, PRODUCTIVITY_CARD, SIDEBAR_CLASSES, TIP_CARD } from '../assets/dummy'
 import { useState } from 'react'
-import { Lightbulb, Sparkles } from 'lucide-react'
+import { Lightbulb, Menu, Sparkles } from 'lucide-react'
 import { NavLink } from "react-router-dom";
 
 const Sidebar = (user, tasks) => {
@@ -102,6 +102,15 @@ const Sidebar = (user, tasks) => {
 
       </div>
     </div>
+
+    {/* mobile menu */}
+    {!mobileOpen && (
+      <button onClick={() => setMobileOpen(true)}
+      className={SIDEBAR_CLASSES.mobileButton}>
+        <Menu className='w-5 h-5'/>
+      </button>
+    )}
+
     </>
   )
 }
