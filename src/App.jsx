@@ -4,6 +4,9 @@ import SignUp from "./components/SignUp";
 import Login from "./components/Login";
 import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
+import PendingPage from "./pages/PendingPage";
+import CompletePage from "./pages/CompletePage";
+import Profile from "./components/Profile";
 
 
 
@@ -64,6 +67,10 @@ function App() {
   <Navigate to='/login' replace />}>
           {/* <Route path='/' element={<Layout />} /> */}
                 <Route path='/' element={<Dashboard />} />
+
+                <Route path='/pending' element={<PendingPage/>}/>
+                <Route path='/complete' element={<CompletePage/>}/>
+                <Route path='/profile' element={<Profile user={currentUser} setCurrentUser={setCurrentUser} onLogout={handleLogout} />}/>
 
 
 
