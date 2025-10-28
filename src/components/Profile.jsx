@@ -16,10 +16,14 @@ const Profile = ({ setCurrentUser, onLogout }) => {
 
   useEffect(() => {
     const token = localStorage.getItem('token')
+    console.log("ppppppppp", token);
+
     if (!token) return
     axios
-      .get(`${API_URL}/api/user/me`, { header: { Authorization: `Bearer ${token}` } })
+      .get(`${API_URL}/api/user/me`, { headers: { Authorization: `Bearer ${token}` } })
       .then(({ data }) => {
+        console.log("ooooo", data);
+
         if (data.success)
           setProfile({ name: data.user.name, email: data.user.email })
         else toast.error(data.message)
@@ -31,13 +35,17 @@ const Profile = ({ setCurrentUser, onLogout }) => {
     e.preventDefault()
     try {
       const token = localStorage.getItem('token')
+      if (!token) return toast.error("No authentication token found");
+
       const { data } = await axios.put(
         `${API_URL}/api/user/profile`,
         { name: profile.name, email: profile.email },
         { headers: { Authorization: `Bearer ${token}` } }
       )
+      console.log("pdara", data);
+
       if (data.success) {
-        setCurrentUser((prav) => ({
+        setCurrentUser((prev) => ({
           ...prev,
           name: profile.name,
           avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name || 'User')}&background=random`
@@ -53,52 +61,52 @@ const Profile = ({ setCurrentUser, onLogout }) => {
   }
 
 
-return (
-  <div className='min-h-screen bg-gray-50'>
-    <ToastContainer position='top-center' autoClose={3000} />
-    <div className='max-w-4xl mx-auto p-6'>
-      <button onClick={() => Navigate(-1)} className={BACK_BUTTON}>
-        <ChevronLeft className='w-5 h-5 mr-1' />
-        Back to Dashboard
-      </button>
-      <div className='flex items-center gap-4 mb-8'>
-        <div className='w-16 h-16 rounded-full bg-gradient-to-br from-fuchsia-500 to-purple-600 
+  return (
+    <div className='min-h-screen bg-gray-50'>
+      <ToastContainer position='top-center' autoClose={3000} />
+      <div className='max-w-4xl mx-auto p-6'>
+        <button onClick={() => Navigate(-1)} className={BACK_BUTTON}>
+          <ChevronLeft className='w-5 h-5 mr-1' />
+          Back to Dashboard
+        </button>
+        <div className='flex items-center gap-4 mb-8'>
+          <div className='w-16 h-16 rounded-full bg-gradient-to-br from-fuchsia-500 to-purple-600 
         flex items-center justify-center text-white text-2xl font-bold shadow-md'>
-          {Profile.name ? Profile.name[0].toUpperCase() : "U"}
-        </div>
-        <div>
-          <h1 className='text-3xl font-bold text-gray-800'>Account Settings</h1>
-          <p className='text-gray-500 text-sm'>Manage your profile and security settings</p>
-        </div>
-      </div>
-      <div className='grid md:grid-cols-2 gap-8'>
-        <section className={SECTION_WRAPPER}>
-          <div className='flex items-center gap-2 mb-6'>
-            <UserCircle className='text-purple-500 w-5 h-5' />
-            <h2 className='text-xl font-semibold text-gray-800'>Personal Information</h2>
+            {Profile.name ? Profile.name[0].toUpperCase() : "U"}
           </div>
+          <div>
+            <h1 className='text-3xl font-bold text-gray-800'>Account Settings</h1>
+            <p className='text-gray-500 text-sm'>Manage your profile and security settings</p>
+          </div>
+        </div>
+        <div className='grid md:grid-cols-2 gap-8'>
+          <section className={SECTION_WRAPPER}>
+            <div className='flex items-center gap-2 mb-6'>
+              <UserCircle className='text-purple-500 w-5 h-5' />
+              <h2 className='text-xl font-semibold text-gray-800'>Personal Information</h2>
+            </div>
 
-          {/* {ERSONAL INFO} */}
-          <form onSubmit={saveProfile} className='space-y-4'>
-            {personalFields.map(({ name, type, placeholder, icon: Icon }) => (
-              <div key={name} className={INPUT_WRAPPER}>
-                <Icon className='text-purple-500 w-5 h-5 mr-2' />
+            {/* {ERSONAL INFO} */}
+            <form onSubmit={saveProfile} className='space-y-4'>
+              {personalFields.map(({ name, type, placeholder, icon: Icon }) => (
+                <div key={name} className={INPUT_WRAPPER}>
+                  <Icon className='text-purple-500 w-5 h-5 mr-2' />
 
-                <input type={type} placeholder={placeholder} value={profile[name]}
-                  onChange={(e) => setProfile({ ...formData, [name]: e.target.value })}
-                  className="w-full focus:outline-none text-sm " required />
-              </div>
-            ))}
-            <button className={FULL_BUTTON}>
-              <Save className='w-4 h-4' /> Save Changes
-            </button>
-          </form>
-        </section>
+                  <input type={type} placeholder={placeholder} value={profile[name]}
+                    onChange={(e) => setProfile({ ...FormData, [name]: e.target.value })}
+                    className="w-full focus:outline-none text-sm " required />
+                </div>
+              ))}
+              <button className={FULL_BUTTON}>
+                <Save className='w-4 h-4' /> Save Changes
+              </button>
+            </form>
+          </section>
+        </div>
       </div>
-    </div>
 
-  </div>
-)
+    </div>
+  )
 }
 
 export default Profile
