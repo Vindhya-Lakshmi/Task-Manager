@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { toast, ToastContainer, } from 'react-toastify'
-import { BACK_BUTTON, FULL_BUTTON, INPUT_WRAPPER, personalFields, SECTION_WRAPPER } from '../assets/dummy'
-import { ChevronLeft, Save, UserCircle } from 'lucide-react'
+import { BACK_BUTTON, FULL_BUTTON, INPUT_WRAPPER, personalFields, SECTION_WRAPPER, securityFields } from '../assets/dummy'
+import { ChevronLeft, Lock, LogOut, Save, Shield, UserCircle } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
@@ -60,6 +60,13 @@ const Profile = ({ setCurrentUser, onLogout }) => {
     }
   }
 
+  const changePassword = async (e) => {
+    e.preventDefault()
+    if(passwords.new !== passwords.confirm) {
+      return toast.error("Password do not match")
+    }
+  }
+
 
   return (
     <div className='min-h-screen bg-gray-50'>
@@ -93,13 +100,41 @@ const Profile = ({ setCurrentUser, onLogout }) => {
                   <Icon className='text-purple-500 w-5 h-5 mr-2' />
 
                   <input type={type} placeholder={placeholder} value={profile[name]}
-                    onChange={(e) => setProfile({ ...FormData, [name]: e.target.value })}
+                    onChange={(e) => setProfile({ ...profile, [name]: e.target.value })}
                     className="w-full focus:outline-none text-sm " required />
                 </div>
               ))}
               <button className={FULL_BUTTON}>
                 <Save className='w-4 h-4' /> Save Changes
               </button>
+            </form>
+          </section>
+          <section className={SECTION_WRAPPER}>
+            <div className='flex items-center gap-2 mb-6'>
+              <Shield className='text-purple-500 w-5 h-5' />
+              <h2 className='text-xl font-semibold text-gray-800'>Security</h2>
+            </div>
+            <form onSubmit={changePassword} className='space-y-4'>
+              {securityFields.map(({ name, placeholder}) => (
+                       <div key={name} className={INPUT_WRAPPER}>
+                  <Lock className='text-purple-500 w-5 h-5 mr-2' />
+
+                  <input type="password" placeholder={placeholder} value={passwords[name]}
+                    onChange={(e) => setPasswords({ ...passwords, [name]: e.target.value })}
+                    className="w-full focus:outline-none text-sm " required />
+                </div>
+              ))}
+               <button className={FULL_BUTTON}>
+                <Shield className='w-4 h-4' />  Change Password
+              </button>
+              <div className='mt-8 pt-6 border-t border-purple-100'>
+                <h3 className='text-red-600 font-semibold mb-4 flex items-center gap-2'>
+                  <LogOut className='w-4 h-4'/> Danger Zone
+                </h3>
+                <button className={DANGER_BTN} onClick={onLogout}>
+                  Logout
+                </button>
+              </div>
             </form>
           </section>
         </div>
