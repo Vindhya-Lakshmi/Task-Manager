@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { toast, ToastContainer, } from 'react-toastify'
-import { BACK_BUTTON, FULL_BUTTON, INPUT_WRAPPER, personalFields, SECTION_WRAPPER, securityFields } from '../assets/dummy'
+import { BACK_BUTTON, DANGER_BTN, FULL_BUTTON, INPUT_WRAPPER, personalFields, SECTION_WRAPPER, securityFields } from '../assets/dummy'
 import { ChevronLeft, Lock, LogOut, Save, Shield, UserCircle } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
@@ -64,6 +64,23 @@ const Profile = ({ setCurrentUser, onLogout }) => {
     e.preventDefault()
     if(passwords.new !== passwords.confirm) {
       return toast.error("Password do not match")
+    }
+    try {
+      const token = localStorage.getItem('token')
+      const { data } = await axios.put(
+        `${API_URL}/api/user/passwords`,
+        {currentPassword: passwords.current, newPassword: passwords.new},
+        {headers: {Authorization: `Bearer ${token}`}}
+      )
+      if(data.success) {
+        toast.success("Passwords Changed")
+        setPasswords({ current: "", new: "", confirm: ""})
+
+      }
+      else toast.error(data.message)
+    }
+    catch (err) {
+      toast.error(err.response?.data?.message || "Passwords change failed")
     }
   }
 
