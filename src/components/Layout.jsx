@@ -129,7 +129,7 @@ const Layout = ({ onLogout, user }) => {
       >
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
           <div className="xl:col-span-2 space-y-3 sm:space-y-4">
-            <Outlet context={{ tasks, refreshTasks: fetchTasks }} />
+            <Outlet context={[ tasks,  fetchTasks ]} />
           </div>
           <div className="xl:col-span-1 space-y-4 sm:space-y-6">
             <div className="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-purple-100">
