@@ -1,12 +1,13 @@
 import { HomeIcon, Plus } from 'lucide-react'
-import React, { useState } from 'react'
-import { ADD_BUTTON, HEADER, ICON_WRAPPER, STAT_CARD, STATS_GRID, VALUE_CLASS, WRAPPER } from '../assets/dummy'
+import React, { useMemo, useState } from 'react'
+import { ADD_BUTTON, HEADER, ICON_WRAPPER, STAT_CARD, STATS, STATS_GRID, VALUE_CLASS, WRAPPER } from '../assets/dummy'
 import { useOutletContext } from 'react-router-dom'
 
 const API_BASE = 'http://localhost:4000/api/tasks'
 
 const Dashboard = () => {
 
+  const [tasks, refreshTasks] = useOutletContext()
   const [showModal, setShowModal] = useState(false)
   const [selectedTask, setSelectedTask] = useState(null)
   const [filter, setFilter] = useState("all")
@@ -17,10 +18,29 @@ const Dashboard = () => {
     mediumPriority: tasks.filter(t => t.priority?.toLowerCase() === 'medium').length,
     highPriority: tasks.filter(t => t.priority?.toLowerCase() === 'high').length,
     completed: tasks.filter(t => t.completed === true || t.completed === 1 || (
-      typeof t.completed === 'string' && t.completed.toLowerCase() === 'yes'
-    ).length)
+      typeof t.completed === 'string' && t.completed.toLowerCase() === 'yes')
+    ).length
 
   }), [tasks])
+
+  // Filter Tasks
+  const filteredTasks = useMemo(() => tasks.filter(task => {
+    const dueDate = new Date(task.dueDate)
+    const today = new Date()
+    const nextWeek = new Date(today); nextWeek.setDate(today.getDate() + 7)
+    switch (filter) {
+      case "today":
+        return dueDate.toDateString() === today.toDateString()
+      case "week":
+        return dueDate >= today && dueDate <= nextWeek
+      case "high":
+      case "medium":
+      case "low":
+        return task.priority?.toLowerCase() === filter
+        default:
+          return true
+    }
+  }), [tasks, filter])
 
 
   return (
