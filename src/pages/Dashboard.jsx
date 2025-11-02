@@ -1,7 +1,9 @@
 import { CalendarIcon, Filter, HomeIcon, Plus } from 'lucide-react'
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { ADD_BUTTON, EMPTY_STATE, FILTER_LABELS, FILTER_OPTIONS, FILTER_WRAPPER, HEADER, ICON_WRAPPER, LABEL_CLASS, SELECT_CLASSES, STAT_CARD, STATS, STATS_GRID, TAB_ACTIVE, TAB_BASE, TAB_INACTIVE, TABS_WRAPPER, VALUE_CLASS, WRAPPER } from '../assets/dummy'
 import { useOutletContext } from 'react-router-dom'
+import axios from 'axios'
+import TaskModal from '../components/TaskModal'
 
 const API_BASE = 'http://localhost:4000/api/tasks'
 
@@ -41,6 +43,18 @@ const Dashboard = () => {
           return true
     }
   }), [tasks, filter])
+
+  //svaing tasks
+  const handleTaskSave = useCallback(async (taskData) => {
+    try{
+      if(taskData.id) await axios.put(`${API_BASE}/${taskData.id}/gp`, taskData)
+        refreshTasks()
+      setShowModal(false)
+      setSelectedTask(null)
+    } catch (error) {
+      console.error("Error saving tasks:", error)
+    }
+  }, [refreshTasks])
 
 
   return (
@@ -128,12 +142,28 @@ const Dashboard = () => {
             ) : (
               filteredTasks.map(task => (
                 <TaskItem key={task._id || task.id}
-                task={task} />
+                task={task} 
+                onRefresh={refreshTasks}
+                showCompleteCheckbox
+                onEdit={() => {setSelectedTask(task); setShowModal(true)}}/>
               ))
             )}
           </div>
+          {/* Add Task Desktop */}
+          <div
+          onClick={() => setShowModal(true)}
+           className='hidden md:flex items.center justify-center p-4 border-2 border-dashed border-purple-200 
+          rounded-xl hover:border-purple-400 bg-purple-50/50 cursor-pointer transition-colors'>
+            <Plus className='w-5 h-5 text-purple-500 mr-2'/>
+            <span className='text-gray-600 font-medium'>Add New Task</span>
+          </div>
         </div>
 
+        {/* model*/}
+        <TaskModal isOpen= {showModal || !!selectedTask}
+        onClose={() => { setShowModal(false); setSelectedTask(null)}}
+        taskToEdit={selectedTask}
+        onSave={handleTaskSave}/>
     </div>
   )
 }
