@@ -132,7 +132,7 @@ const TaskModal = ({ isOpen, onClose, taskToEdit, onSave, onLogout }) => {
               className={`${baseControlClasses} ${priorityStyles[taskData.priority]}`}>
                 <option>Low</option>
                 <option>Medium</option>
-                <option>High</option>
+                <option>Higher</option>
               </select>
             </div>
           </div>
