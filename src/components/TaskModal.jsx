@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react'
 import { useState } from 'react'
 import { baseControlClasses, DEFAULT_TASK, priorityStyles } from '../assets/dummy'
-import { AlignLeft, Flag, PlusCircle, Save, X } from 'lucide-react'
+import { AlignLeft, Calendar, CheckCircle, Flag, PlusCircle, Save, X } from 'lucide-react'
 
 const API_BASE = 'http://localhost:4000/api/tasks'
 
@@ -130,11 +130,45 @@ const TaskModal = ({ isOpen, onClose, taskToEdit, onSave, onLogout }) => {
               </label>
               <select name='priority' value={taskData.priority} onChange={handleChange}
               className={`${baseControlClasses} ${priorityStyles[taskData.priority]}`}>
-                <option>Low</option>
-                <option>Medium</option>
-                <option>Higher</option>
+                <option value="low">Low</option>
+                <option value="medium"> Medium</option>
+                <option value="high">High</option>
               </select>
             </div>
+            <div>
+              <label className='flex items-center gap-1 text-sm font-medium text-gray-700 mb-1'>
+                <Calendar className='w-4 h-4 text-purple-500'/> Due Date
+              </label>
+              <input type="date" name='dueDate' required min={today} value={taskData.dueDate}
+              onChange={handleChange} className={baseControlClasses}/>
+            </div>
+          </div>
+             <label className='flex items-center gap-1 text-sm font-medium text-gray-700 mb-2'>
+                <CheckCircle className='w-4 h-4 text-purple-500'/> Status
+              </label>
+              <div className='flex gap-4'>
+                {[{ val: 'Yes', label: 'Completed'}, { val: 'No', label: 'In Progress'}].map(({ val, label}) => (
+                  <label key={val} className='flex items-center'>
+                    <input type='radio' name='completed' value={val} checked={taskData.completed === val}
+                    onChange={handleChange} className='h-4 w-4 text-purple-600 focus:ring-purple-500 
+                    border-gray-300 rounded'/>
+                    <span className='ml-2 text-sm text-gray-700'>{label}</span>
+                  </label>
+                ))}
+              </div>
+          <div>
+
+            <button type='submit' disabled={loading}
+            className='w-full bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white 
+            font-medium py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50 
+            hover:shadow-md transition-all duration-200'>
+              {loading ? 'Saving...' : (taskData.id ? <>
+              <Save className='w-4 h-4'/> Update Task
+              </> : <>
+              <PlusCircle className='w-4 h-4'/>Create Task
+              </>)}
+            </button>
+
           </div>
         </form>
       </div>
