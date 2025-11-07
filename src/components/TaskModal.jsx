@@ -19,7 +19,7 @@ const TaskModal = ({ isOpen, onClose, taskToEdit, onSave, onLogout }) => {
         ...DEFAULT_TASK,
         title: taskToEdit.title || '',
         description: taskToEdit.description || '',
-        priority: taskToEdit.priority || 'Low',
+        priority: taskToEdit.priority || 'low',
         dueDate: taskToEdit.dueDate?.split('T')[0] || '',
         completed: normalized,
         id: taskToEdit._id,
@@ -62,6 +62,9 @@ const TaskModal = ({ isOpen, onClose, taskToEdit, onSave, onLogout }) => {
         headers: getHeaders(),
         body: JSON.stringify(taskData),
       });
+      console.log("resp",resp);
+      
+            
       if(!resp.ok) {
         if (resp.status === 401) return onLogout?.();
         const err = await resp.json();
@@ -71,7 +74,7 @@ const TaskModal = ({ isOpen, onClose, taskToEdit, onSave, onLogout }) => {
       onSave?.(saved);
       onClose();
     }
-    catch (error) {
+    catch (err) {
       console.error(err)
       setError(err.message || 'An unexpected error occured')
 
@@ -80,6 +83,8 @@ const TaskModal = ({ isOpen, onClose, taskToEdit, onSave, onLogout }) => {
       setLoading(false)
     }
   }, [taskData, today, getHeaders, onLogout, onSave, onClose])
+
+  if(!isOpen) return null;
 
   return (
     <div className='fixed inset-0 backdrop-blur-sm bg-black/20 z-50 flex items-center justify-center p-4'>

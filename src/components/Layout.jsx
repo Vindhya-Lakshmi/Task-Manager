@@ -2,11 +2,11 @@ import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import {Circle, Clock, TrendingUp, Zap} from 'lucide-react'
+import { Circle, Clock, TrendingUp, Zap } from 'lucide-react'
 import axios from "axios";
 
 const Layout = ({ onLogout, user }) => {
-  
+
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -20,18 +20,14 @@ const Layout = ({ onLogout, user }) => {
 
       if (!token) throw new Error("No auth token found");
 
-      const  data  = await axios.get("http://localhost:4000/api/tasks/gp", {
+      const response = await axios.get("http://localhost:4000/api/tasks/gp", {
         headers: { Authorization: `Bearer ${token}` },
       });
-  
-      
-      const arr = Array.isArray(data)
-        ? data
-        : Array.isArray(data?.tasks)
-        ? data.tasks
-        : Array.isArray(data?.data)
-        ? data.data
-        : [];
+      console.log("data", response);
+
+
+
+      const arr = Array.isArray(response.data.tasks) ? response.data.tasks : [];
       setTasks(arr);
     } catch (err) {
       console.error(err);
@@ -129,7 +125,7 @@ const Layout = ({ onLogout, user }) => {
       >
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
           <div className="xl:col-span-2 space-y-3 sm:space-y-4">
-            <Outlet context={[ tasks,  fetchTasks ]} />
+            <Outlet context={[tasks, fetchTasks]} />
           </div>
           <div className="xl:col-span-1 space-y-4 sm:space-y-6">
             <div className="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-purple-100">
@@ -141,35 +137,35 @@ const Layout = ({ onLogout, user }) => {
               <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
                 <StatCard title='Total Tasks' value={stats.totalCount} icon={<Circle className="w-3.5 
                 h-3 sm:w-4 sm:h-4 text-purple-500"/>} />
-                  <StatCard title='Completed' value={stats.completedTasks} icon={<Circle className="w-3.5 
+                <StatCard title='Completed' value={stats.completedTasks} icon={<Circle className="w-3.5 
                 h-3 sm:w-4 sm:h-4 text-green-500"/>} />
-                  <StatCard title='Pending' value={stats.pendingCount} icon={<Circle className="w-3.5 
+                <StatCard title='Pending' value={stats.pendingCount} icon={<Circle className="w-3.5 
                 h-3 sm:w-4 sm:h-4 text-fuchsia-500"/>} />
-                  <StatCard title='Completion Rate' value={`${stats.totalCount}%`} icon={<Zap className="w-3.5 
+                <StatCard title='Completion Rate' value={`${stats.totalCount}%`} icon={<Zap className="w-3.5 
                 h-3 sm:w-4 sm:h-4 text-purple-500"/>} />
 
               </div>
               <hr className="my-3 sm:my-4 border-purple-100" />
               <div className="space-y-2 sm:space-y-3">
-                    <div className=" flex items-center justify-between text-gray-700">
-                      <span className="text-xs sm:text-sm font-medium flex items-center gap-1.5">
-                        <Circle className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-purple-500 fill-purple-500" />
-                        Task Progress
-                      </span>
-                      <span className="text-xs bg-purple-100 text-purple-700 px-1.5 py-0.5 sm:px-2 
+                <div className=" flex items-center justify-between text-gray-700">
+                  <span className="text-xs sm:text-sm font-medium flex items-center gap-1.5">
+                    <Circle className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-purple-500 fill-purple-500" />
+                    Task Progress
+                  </span>
+                  <span className="text-xs bg-purple-100 text-purple-700 px-1.5 py-0.5 sm:px-2 
                       rounded-full">
-                        {stats.completedTasks}/ {stats.totalCount}
-                      </span>
-                    </div>
-                    <div className="relative pt-1">
-                      <div className="flex gap-1.5 items-center">
-                        <div className="flex-1 h-2 sm:h-3 bg-purple-100 rounded-full overflow-hidden">
-                          <div className="h-full bg-gradient-to-r from-fuchsia-500 to-purple-600 
+                    {stats.completedTasks}/ {stats.totalCount}
+                  </span>
+                </div>
+                <div className="relative pt-1">
+                  <div className="flex gap-1.5 items-center">
+                    <div className="flex-1 h-2 sm:h-3 bg-purple-100 rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-fuchsia-500 to-purple-600 
                           transition-all duration-500"
-                          style={{width: `${stats.completionPercentage}%`}} />
-                        </div>
-                      </div>
+                        style={{ width: `${stats.completionPercentage}%` }} />
                     </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div className=" bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-purple-100">
@@ -189,14 +185,14 @@ const Layout = ({ onLogout, user }) => {
                       </p>
                       <p className="text-xs text-gray-500 mt-0.5">
                         {task.createdAt ? new Date(task.createdAt).toLocaleDateString()
-                        : "No date"}
+                          : "No date"}
                       </p>
-                      </div>
-                      <span className={`px-2 py-1 text-xs rounded-full shrink-0 ml-2 
+                    </div>
+                    <span className={`px-2 py-1 text-xs rounded-full shrink-0 ml-2 
                         ${task.completed ? 'bg-green-100 text-green-700'
-                          :'bg-fuchsia-100 text-fuchsia-700'}`}>
-                            {task.completed ? "Done" : "Pending"}
-                            </span> 
+                        : 'bg-fuchsia-100 text-fuchsia-700'}`}>
+                      {task.completed ? "Done" : "Pending"}
+                    </span>
                   </div>
                 ))}
                 {tasks.length === 0 && (
