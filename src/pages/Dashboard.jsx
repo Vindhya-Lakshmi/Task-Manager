@@ -4,6 +4,7 @@ import { ADD_BUTTON, EMPTY_STATE, FILTER_LABELS, FILTER_OPTIONS, FILTER_WRAPPER,
 import { useOutletContext } from 'react-router-dom'
 import axios from 'axios'
 import TaskModal from '../components/TaskModal'
+import TaskItem from '../components/TaskItem'
 
 const API_BASE = 'http://localhost:4000/api/tasks'
 
@@ -13,6 +14,9 @@ const Dashboard = () => {
   const [showModal, setShowModal] = useState(false)
   const [selectedTask, setSelectedTask] = useState(null)
   const [filter, setFilter] = useState("all")
+
+  console.log("tasks",tasks);
+  
 
   const stats = useMemo(() => ({
     total: tasks.length,
@@ -43,6 +47,9 @@ const Dashboard = () => {
           return true
     }
   }), [tasks, filter])
+
+  console.log("filteredTasks",filteredTasks);
+  
 
   //svaing tasks
   const handleTaskSave = useCallback(async (taskData) => {
