@@ -1,9 +1,10 @@
 import React, { useMemo, useState } from 'react'
-import { layoutClasses } from '../assets/dummy'
-import { Filter, ListChecks } from 'lucide-react'
+import { layoutClasses, SORT_OPTIONS } from '../assets/dummy'
+import { Clock, Filter, ListChecks, Plus } from 'lucide-react'
 import { useOutletContext } from 'react-router-dom'
+import TaskItem from '../components/TaskItem'
+import TaskModal from '../components/TaskModal'
 
-const API_BASE = 'http://localhost:4000/api/tasks'
 
 
 const PendingPage = () => {
@@ -11,13 +12,7 @@ const PendingPage = () => {
   const { tasks = [], refreshTasks } = useOutletContext();
   const [sortBy, setSortBy] = useState('newest')
   const [selectedTask, setSelectedTask] = useState(null)
-  const [showModal, setShowModel] = useState(false)
-
-  const getHeaders = () => {
-    const token = localStorage.getItem('token')
-    if (!token) throw new Error("No auth token found")
-    return { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
-  }
+  const [showModal, setShowModal] = useState(false)
 
   const sortedPendingTasks = useMemo(() => {
     const filtered = tasks.filter(
@@ -42,7 +37,7 @@ const PendingPage = () => {
             <ListChecks className='text-purple-500' /> Pending Task
           </h1>
           <p className='text-sm text-gray-500 mt-1 ml-7'>
-            {sortedPendingTasks.length} task{sortedPendingTasks.length !== 1 && 's'}
+            {sortedPendingTasks.length} task{sortedPendingTasks.length !== 1 && 's'} {' '}
             needing your attention 
           </p>
         </div>
@@ -58,9 +53,63 @@ const PendingPage = () => {
             <option value="oldest">Oldest First</option>
             <option value="priority">By Priority</option>
           </select>
-          <div className={layoutClasses.tabWrapper}></div>
+          <div className={layoutClasses.tabWrapper}>
+            {SORT_OPTIONS.map(opt => (
+              <button key={opt.id} onClick={() => setSortBy(opt.id)}
+              className={layoutClasses.tabButton(sortBy === opt.id)}>
+                {opt.icon}{opt.label}
+              </button>
+            ))}
+            </div>
         </div>
       </div>
+      <div className={layoutClasses.addBox} onClick={() => setShowModal(true)}>
+        <div className='flex items-center justify-center gap-3 text-gray-500 group-hover:text-purple-600 
+        transition-colors'>
+          <div className='w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm 
+          group-hover:shadow-md transition-all duration-200'>
+            <Plus className='text-purple-500' size={18}/>
+          </div>
+          <span className='font-medium'>
+            Add New Task
+          </span>
+        </div>
+      </div>
+      <div className='space-y-4'>
+        {sortedPendingTasks.length === 0 ? (
+          <div className={layoutClasses.emptyState}>
+            <div className='max-w-xs mx-auto py-6'>
+              <div className={layoutClasses.emptyIconBg}>
+                <Clock className='w-8 h-8 text-purple-500'/>
+              </div>
+              <h3 className='text-lg font-semibold text-gray-800 mb-2'>
+                All caught up!
+              </h3>
+              <p className='text-sm text-gray-500 mb-4'>
+                No pending tasks - great work!
+              </p>
+              <button onClick={() => setShowModal(true)}
+                className={layoutClasses.emptyBtn}> Create New Task</button>
+            </div>
+          </div>
+        ) : (
+          sortedPendingTasks.map(task => (
+            <TaskItem key={task._id || task.id}
+            task={task} 
+            showCompleteCheckbox onDelete={() => handleToggleComplete(task._id || task.id)}
+            onToggleComplete={() => handleToggleComplete(
+              task._id || task.id,
+              t.completed
+            )}
+            onEdit = {() => {setSelectedTask(task); setShowModal(true);}}
+            onRefresh={refreshTasks}/>
+          ))
+        )}
+      </div>
+
+      <TaskModal isOpen={!!selectedTask || showModal}
+      onClose={() => { setShowModal(false); setSelectedTask(null); refreshTasks();}}
+      taskToEdit={{selectedTask}}/>
     </div>
   )
 }

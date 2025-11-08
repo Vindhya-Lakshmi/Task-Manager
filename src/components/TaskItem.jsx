@@ -40,7 +40,7 @@ const TaskItem = ({ task, onRefresh, onLogout, showCompleteCheckbox = true }) =>
   const handleComplete = async () => {
     const newStatus = isCompleted ? 'No' : 'Yes'
     try {
-      await axios.put(`${API_BASE}/${task.id}/gp`, { completed: newStatus },
+      await axios.put(`${API_BASE}/${task._id}/gp`, { completed: newStatus },
         { headers: getAuthHeaders() }
       )
       setIsCompleted(!isCompleted)
@@ -129,7 +129,7 @@ const TaskItem = ({ task, onRefresh, onLogout, showCompleteCheckbox = true }) =>
               </div>
             )}
           </div>
-          <div className={`${TI_CLASSES.dataRow} ${task.dueDate && isToday(new Date(task.dueDate))
+          <div className={`${TI_CLASSES.dateRow} ${task.dueDate && isToday(new Date(task.dueDate))
             ? 'text-fuchsia-600' : 'text-gray-500'
             }`}>
             <Calculator className='w-3 h-3.5' />
